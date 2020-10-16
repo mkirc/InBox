@@ -14,7 +14,7 @@ def run():
     samplePath = 'assets/sample_n-25000.csv'
     minPath = 'assets/sample_min.csv'
     pc = PackingController()
-    pc.loadItems(minPath)
+    pc.loadItems(itemsPath)
     print('%i items loaded.' % len(pc.items))
     pc.loadBoxes(boxesPath)
     print('%i boxes loaded.' % len(pc.boxes))
@@ -22,8 +22,8 @@ def run():
     
     pc.initRSP()
     pc.initBFP()
-    # pc.bfp.pack()
-    # print(pc.bfp.validate())
+    pc.bfp.pack()
+    print(pc.bfp.validate())
     pc.rsp.pack()
     print(pc.rsp.validate())
 

@@ -85,6 +85,7 @@ class RankSearchPacker(Packer):
                 self.initItems = self.itemsLeft
                 
         else:
+            # print(self.initItems[-1].dim)
             print(len(self.initItems), len(self.itemsLeft))
 
 
@@ -94,7 +95,7 @@ class RankSearchPacker(Packer):
         R = len(itemList) - 1
         while L < R:
             m = (L + R) // 2
-            if itemList[m].dim[dim] < T:
+            if itemList[m].dim[dim] <= T:
                 L = m + 1
             else:
                 R = m
