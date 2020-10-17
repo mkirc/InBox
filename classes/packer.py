@@ -1,5 +1,6 @@
 import numpy as np
 from abc import ABC, abstractmethod
+from bisect import bisect
 
 class Packer(ABC):
 
@@ -84,9 +85,10 @@ class RankSearchPacker(Packer):
                 # print([it.dim[i] for it in b.items])
                 self.initItems = self.itemsLeft
                 
-        else:
-            # print(self.initItems[-1].dim)
-            print(len(self.initItems), len(self.itemsLeft))
+        # else:
+        #     # print(self.initItems[-1].dim)
+        print(len(self.items), len(self.initItems), len(self.itemsLeft))
+
 
 
     def rankSearch(self, itemList, T, dim=0):
@@ -119,3 +121,42 @@ class RankSearchPacker(Packer):
                 return -1
         else:
             return L - 1
+
+class BisectPacker(Packer):
+    '''Remember the RSP from line 52?
+    this is basically the same thing,
+    only with a python implementation
+    of rank search'''
+
+    def __init__(self, items, boxes):
+
+        super().__init__(items, boxes)
+
+        self.initItems = self.items
+
+    def pack(self):
+        
+        for b in self.boxes:
+
+            self.itemsLeft = []
+
+            for i in range(3):
+                
+                T = b.dim[i]
+
+                itSorted = sorted(self.initItems,
+                        key=lambda x:x.dim[i])
+
+                keys = [it.dim[i] for it in itSorted] # compute the keylist
+                idx = bisect(keys, T) # perform the search
+                self.itemsLeft.extend(itSorted[idx:])
+                self.initItems = itSorted[:idx]
+            else:
+                b.items = self.initItems
+                # print([it.dim[i] for it in b.items])
+                self.initItems = self.itemsLeft
+                
+        else:
+            # print(self.initItems[-1].dim)
+            print(len(self.items), len(self.initItems), len(self.itemsLeft))
+
