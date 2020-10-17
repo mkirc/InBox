@@ -1,5 +1,5 @@
 import numpy as np
-from classes.control import PackingController
+from classes.control import PackingController, Timer
 
 def prettyPrint(boxList):
 
@@ -13,6 +13,8 @@ def run():
     boxesPath = 'assets/boxes_orig.csv'
     samplePath = 'assets/sample_n-25000.csv'
     minPath = 'assets/sample_min.csv'
+
+
     pc = PackingController()
     pc.loadItems(itemsPath)
     print('%i items loaded.' % len(pc.items))
@@ -20,12 +22,27 @@ def run():
     print('%i boxes loaded.' % len(pc.boxes))
     pc.sortBoxesByVolume()
     
+    t = Timer()
+
     pc.initRSP()
     pc.initBFP()
+    pc.initBP()
+    
+    t.start()
     pc.bfp.pack()
+    t.stop()
     print(pc.bfp.validate())
+    
+    t.start()
     pc.rsp.pack()
+    t.stop()   
     print(pc.rsp.validate())
+
+    t.start()
+    pc.bp.pack()
+    t.stop()    
+    print(pc.bp.validate())
+    
 
     
 
