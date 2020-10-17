@@ -1,7 +1,7 @@
 import numpy as np
 from time import perf_counter
 from classes.point import ItemBoxFactory
-from classes.packer import BruteForcePacker, RankSearchPacker, BisectPacker
+from classes.packer import LinearSearchPacker, RankSearchPacker, BisectPacker
 
 class PackingController():
 
@@ -28,9 +28,9 @@ class PackingController():
         self.boxes = sorted(self.boxes, 
                 key=lambda x:(x.dim[0] * x.dim[1] * x.dim[2]))
 
-    def initBFP(self):
+    def initLSP(self):
         
-        self.bfp = BruteForcePacker(self.items, self.boxes)
+        self.lsp = LinearSearchPacker(self.items, self.boxes)
 
     def initRSP(self):
 

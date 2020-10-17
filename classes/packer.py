@@ -29,7 +29,7 @@ class Packer(ABC):
             return False
 
 
-class BruteForcePacker(Packer):
+class LinearSearchPacker(Packer):
 
     def __init__(self, items, boxes):
 

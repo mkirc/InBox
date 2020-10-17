@@ -25,13 +25,13 @@ def run():
     t = Timer()
 
     pc.initRSP()
-    pc.initBFP()
+    pc.initLSP()
     pc.initBP()
     
     t.start()
-    pc.bfp.pack()
+    pc.lsp.pack()
     t.stop()
-    print(pc.bfp.validate())
+    print(pc.lsp.validate())
     
     t.start()
     pc.rsp.pack()
