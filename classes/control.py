@@ -1,6 +1,7 @@
 import numpy as np
+from time import perf_counter
 from classes.point import ItemBoxFactory
-from classes.packer import BruteForcePacker, RankSearchPacker
+from classes.packer import BruteForcePacker, RankSearchPacker, BisectPacker
 
 class PackingController():
 
@@ -34,3 +35,40 @@ class PackingController():
     def initRSP(self):
 
         self.rsp = RankSearchPacker(self.items, self.boxes)
+
+    def initBP(self):
+
+        self.bp = BisectPacker(self.items, self.boxes)
+
+
+class TimerError(Exception):
+    """custom Timer exception"""
+
+class Timer():
+
+    def __init__(self):
+
+        self._startTime = None
+
+    def start(self):
+
+        if self._startTime is not None:
+            raise TimerError(f'Timer is running, use stop() to stop it.')
+        else:
+            self._startTime = perf_counter()
+
+    def stop(self):
+
+        if self._startTime is None:
+            raise TimerError(f'Timer is not running, use start() to start it.')
+        else:
+
+            elapsedTime = perf_counter() - self._startTime
+            
+            print('Elapsed Time: %0.4f seconds.' % (elapsedTime))
+
+            self._startTime = None
+
+            return elapsedTime
+
+
