@@ -1,7 +1,10 @@
 import numpy as np
 from time import perf_counter
 from classes.point import ItemBoxFactory
-from classes.packer import LinearSearchPacker, RankSearchPacker, BisectPacker
+from classes.packer import LinearSearchPacker
+from classes.packer import RankSearchPacker
+from classes.packer import BisectPacker
+from classes.packer import BisectAndDiffPacker
 
 class PackingController():
 
@@ -37,8 +40,11 @@ class PackingController():
         self.rsp = RankSearchPacker(self.items, self.boxes)
 
     def initBP(self):
-
         self.bp = BisectPacker(self.items, self.boxes)
+
+    def initBDP(self):
+
+        self.bdp = BisectAndDiffPacker(self.items, self.boxes)
 
 
 class TimerError(Exception):
