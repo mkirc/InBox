@@ -1,5 +1,6 @@
 import numpy as np
 from classes.control import PackingController, Timer
+from classes.test import Tester
 
 def prettyPrint(boxList):
 
@@ -22,6 +23,7 @@ def run():
     print('%i boxes loaded.' % len(pc.boxes))
     pc.sortBoxesByVolume()
     
+    tester = Tester()
     t = Timer()
 
     pc.initRSP()
@@ -50,5 +52,9 @@ def run():
     t.stop()    
     print(pc.bdp.validate())
     
+    tester.testItemNumbersEqual(pc.lsp, pc.bdp)
 
-run()
+
+
+if __name__ == '__main__':
+    run()
