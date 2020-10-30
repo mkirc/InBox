@@ -1,6 +1,6 @@
 import numpy as np
 from classes.control import PackingController, Timer
-from classes.test import Tester
+from classes.tests import testItemNumbersEqual
 
 def prettyPrint(boxList):
 
@@ -17,13 +17,12 @@ def run():
 
 
     pc = PackingController()
-    pc.loadItems(itemsPath)
+    pc.loadItems(samplePath)
     print('%i items loaded.' % len(pc.items))
     pc.loadBoxes(boxesPath)
     print('%i boxes loaded.' % len(pc.boxes))
     pc.sortBoxesByVolume()
     
-    tester = Tester()
     t = Timer()
 
     pc.initRSP()
@@ -52,7 +51,7 @@ def run():
     t.stop()    
     print(pc.bdp.validate())
     
-    tester.testItemNumbersEqual(pc.lsp, pc.bdp)
+    testItemNumbersEqual(pc.lsp, pc.bdp)
 
 
 
