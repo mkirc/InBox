@@ -54,9 +54,9 @@ class LinearSearchPacker(Packer):
 
 
 class RankSearchPacker(Packer):
-        """Sort items in one dimension, rankSearch against the box 
-        dimension, bigger items remain for the other boxes, smaller
-        items become new input, repeat for next dimension."""
+    """Sort items in one dimension, rankSearch against the box 
+    dimension, bigger items remain for the other boxes, smaller
+    items become new input, repeat for next dimension."""
 
     def __init__(self, items, boxes):
 
@@ -74,7 +74,7 @@ class RankSearchPacker(Packer):
                 T = b.dim[i]
                 itSorted = sorted(self._items,
                         key=lambda x:x.dim[i])
-                idx = self.rankSearch(itSorted, T, dim=i)
+                idx = rankSearch(itSorted, T, dim=i)
                 self.itemsLeft.extend(itSorted[idx + 1:])
                 self._items = itSorted[:idx + 1]
                 
@@ -88,37 +88,6 @@ class RankSearchPacker(Packer):
         print(len(self.items), len(self._items), len(self.itemsLeft))
 
 
-
-    def rankSearch(self, itemList, T, dim=0):
-        """returns the Rank of a target value in an Array"""
-        L = 0
-        R = len(itemList) - 1
-        while L < R:
-            m = (L + R) // 2
-            if itemList[m].dim[dim] <= T:
-                L = m + 1
-            else:
-                R = m
-        
-        '''
-        Corner Case 1: List is two items long, item_0 = T,
-        so R = L = 0 < len(List) -1. Return index. 
-        '''
-        if len(itemList) == 2:
-            if itemList[0].dim[dim] <= T:
-                return 0
-        
-        '''
-        Corner Case 2: List is exhausted, L = R = len(List) - 1.
-        Check if item_-1 <= T, return index.
-        '''
-        if L == len(itemList) - 1:
-            if itemList[L].dim[dim] <= T:
-                return L
-            else:
-                return -1
-        else:
-            return L - 1
 
 class BisectPacker(Packer):
     """Remember the RSP from line 52?
@@ -195,7 +164,7 @@ class BisectAndDiffPacker(Packer):
                 
                 T = b.dim[i]
                 itList = self._items[i]
-                idx = self.rankSearch(itList, T, dim=i)
+                idx = rankSearch(itList, T, dim=i)
                 candidates.append(self._items[i][:idx+1])
                 itemsLeft.append(deque(self._items[i][idx+1:]))
             else:
@@ -214,33 +183,33 @@ class BisectAndDiffPacker(Packer):
                     self._items[i] = list(itemsLeft[i])
 
 
-    def rankSearch(self, itemList, T, dim=0):
-        '''returns the Rank of a target value in an Array'''
-        L = 0
-        R = len(itemList) - 1
-        while L < R:
-            m = (L + R) // 2
-            if itemList[m].dim[dim] <= T:
-                L = m + 1
-            else:
-                R = m
-        
-        '''
-        Corner Case 1: List is two items long, item_0 = T,
-        so R = L = 0 < len(List) -1. Return index. 
-        '''
-        if len(itemList) == 2:
-            if itemList[0].dim[dim] <= T:
-                return 0
-        
-        '''
-        Corner Case 2: List is exhausted, L = R = len(List) - 1.
-        Check if item_-1 <= T, return index.
-        '''
-        if L == len(itemList) - 1:
-            if itemList[L].dim[dim] <= T:
-                return L
-            else:
-                return -1
+def rankSearch(itemList, T, dim=0):
+    '''returns the Rank of a target value in an Array'''
+    L = 0
+    R = len(itemList) - 1
+    while L < R:
+        m = (L + R) // 2
+        if itemList[m].dim[dim] <= T:
+            L = m + 1
         else:
-            return L - 1
+            R = m
+    
+    '''
+    Corner Case 1: List is two items long, item_0 = T,
+    so R = L = 0 < len(List) -1. Return index. 
+    '''
+    if len(itemList) == 2:
+        if itemList[0].dim[dim] <= T:
+            return 0
+    
+    '''
+    Corner Case 2: List is exhausted, L = R = len(List) - 1.
+    Check if item_-1 <= T, return index.
+    '''
+    if L == len(itemList) - 1:
+        if itemList[L].dim[dim] <= T:
+            return L
+        else:
+            return -1
+    else:
+        return L - 1
