@@ -70,15 +70,24 @@ class RankSearchPacker(Packer):
 
             self.itemsLeft = []
 
+            # iterate over dimensions
             for i in range(3):
                 T = b.dim[i]
+                # sort in current dimension
                 itSorted = sorted(self._items,
-                        key=lambda x:x.dim[i])
+                        key=lambda x:x.dim[i]) 
+                # get index of highest value still fitting
                 idx = rankSearch(itSorted, T, dim=i)
+                # put larger items into itemLeft 
                 self.itemsLeft.extend(itSorted[idx + 1:])
+                '''put smaller items into _items, so we can take them
+                into the next iteration step'''
                 self._items = itSorted[:idx + 1]
                 
             else:
+                '''now we iterated over all dimensions. assign _items to
+                the corresponding box, set _items to itemsLeft, so we have them
+                ready for the next box'''
                 b.items = self._items
                 # print([it.dim[i] for it in b.items])
                 self._items = self.itemsLeft
@@ -90,7 +99,7 @@ class RankSearchPacker(Packer):
 
 
 class BisectPacker(Packer):
-    """Remember the RSP from line 52?
+    """Remember the RSP from above?
     this is basically the same thing,
     only with a python implementation
     of rank search"""
@@ -152,6 +161,7 @@ class BisectAndDiffPacker(Packer):
             x = sorted(self.items,
                     key=lambda x:x.dim[i])
             self._items.append(x)
+        return
 
     def pack(self):
         
@@ -162,24 +172,43 @@ class BisectAndDiffPacker(Packer):
             
             for i in range(3):
                 
+                # here we get the target for the ranksearch
                 T = b.dim[i]
+                # get the list to perform the ranksearch on
                 itList = self._items[i]
                 idx = rankSearch(itList, T, dim=i)
+                # put boxes with smaller dimension into candidates
                 candidates.append(self._items[i][:idx+1])
+                '''put lager ones into itemsLeft. note, that we use
+                a deque, so we can extend the list to the left later'''
                 itemsLeft.append(deque(self._items[i][idx+1:]))
             else:
+                '''after we built our candidates, compute the intersection of all three
+                lists. Note that set() is performed on the Item(Point)-objects.'''
+
                 intersection = set(candidates[0]) \
                         & set(candidates[1]) \
                         & set(candidates[2])
                 
+                # assign the items in the intersection to the target box
                 b.items = intersection
                 
+                '''of course not all items made it into our final intersection.
+                i call them fools, because locally they seemed like a good choice,
+                but at least on dimension didnt check out'''
+                
                 for i in range(3):
-
+                    
+                    '''sort fools by their dimensions. note, that we use
+                    condidates for building the list, since we want to retain
+                    their order, which set() destroyed in intersection'''
                     fools = [x for x in candidates[i] if x not in intersection]
+                    '''we have to reverse fools, because extendleft() reads the list
+                    starting from the highest index in reverse'''
                     fools.reverse() 
                     itemsLeft[i].extendleft(fools)
                     
+                    # last but not least we prepare _items for the next round
                     self._items[i] = list(itemsLeft[i])
 
 
